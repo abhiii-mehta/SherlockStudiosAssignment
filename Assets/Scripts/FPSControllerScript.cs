@@ -21,7 +21,6 @@ public class FPSController : MonoBehaviour
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction toggleFlashlightAction;
-
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -36,7 +35,6 @@ public class FPSController : MonoBehaviour
         jumpAction = playerMap.FindAction("Jump", throwIfNotFound: true);
         toggleFlashlightAction = playerMap.FindAction("ToggleLight", throwIfNotFound: false);
     }
-
     void OnEnable()
     {
         moveAction.Enable();
@@ -44,7 +42,6 @@ public class FPSController : MonoBehaviour
         jumpAction.Enable();
         toggleFlashlightAction?.Enable();
     }
-
     void OnDisable()
     {
         moveAction.Disable();
@@ -52,7 +49,6 @@ public class FPSController : MonoBehaviour
         jumpAction.Disable();
         toggleFlashlightAction?.Disable();
     }
-
     void Update()
     {
         HandleLook();
@@ -69,7 +65,6 @@ public class FPSController : MonoBehaviour
         verticalVelocity += gravity * Time.deltaTime;
         controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
-
     private void HandleMovement()
     {
         moveInput = moveAction.ReadValue<Vector2>();
@@ -86,6 +81,4 @@ public class FPSController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * lookInput.x * lookSensitivity);
     }
-
-
 }

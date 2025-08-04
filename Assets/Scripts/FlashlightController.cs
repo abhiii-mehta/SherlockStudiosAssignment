@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FlashlightController : MonoBehaviour
 {
     [Header("Flashlight Settings")]
     public Light flashlightLight;
     public float maxBattery = 100f;
-    public float batteryDrainRate = 10f; // per minute
+    public float batteryDrainRate = 100f;
     public float minIntensity = 100f;
     public float maxIntensity = 3000f;
     public KeyCode toggleKey = KeyCode.F;
@@ -20,6 +21,8 @@ public class FlashlightController : MonoBehaviour
     private float fallbackTimer;
     private bool flashlightDead = false;
 
+    [Header("UI")]
+    public Slider batterySlider;
     void Start()
     {
         currentBattery = maxBattery;
@@ -27,7 +30,6 @@ public class FlashlightController : MonoBehaviour
         fallbackLight.enabled = false;
         Debug.Log("FlashlightController started");
     }
-
     void Update()
     {
         if (Input.GetKeyDown(toggleKey))
@@ -52,7 +54,6 @@ public class FlashlightController : MonoBehaviour
 
         HandleFallbackLight();
     }
-
     private void HandleToggle()
     {
         if (Input.GetKeyDown(toggleKey) && !flashlightDead)
@@ -62,39 +63,38 @@ public class FlashlightController : MonoBehaviour
             Debug.Log($"Flashlight toggled {(isOn ? "ON" : "OFF")}");
         }
     }
-
     private void DrainBattery()
     {
-        currentBattery -= (batteryDrainRate / 60f) * Time.deltaTime;
+        currentBattery -= batteryDrainRate * Time.deltaTime;
         currentBattery = Mathf.Max(currentBattery, 0f);
+        UpdateBatteryUI();
     }
-
     private void UpdateLightIntensity()
     {
         float t = currentBattery / maxBattery;
         flashlightLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, t);
     }
-
     private void TurnOffFlashlight()
     {
         isOn = false;
         flashlightLight.enabled = false;
         fallbackTimer = fallbackDelay;
     }
-
     private void HandleFallbackLight()
     {
         if (!isOn && flashlightDead)
         {
             fallbackTimer -= Time.deltaTime;
+            Debug.Log("Fallback countdown: " + fallbackTimer.ToString("F2"));
+
             if (fallbackTimer <= 0f)
             {
-                fallbackLight.enabled = Random.value > 0.5f;
-                fallbackLight.intensity = Random.Range(50f, 150f);
+                fallbackLight.enabled = Random.value > 0.8f;
+                fallbackLight.intensity = Random.Range(50f, 500f);
+                Debug.Log("Fallback light flickering. Enabled: " + fallbackLight.enabled);
             }
         }
     }
-
     public void RechargeBattery(float amount)
     {
         currentBattery += amount;
@@ -104,10 +104,18 @@ public class FlashlightController : MonoBehaviour
         {
             fallbackLight.enabled = false;
         }
+        UpdateBatteryUI();
     }
-
     public float GetBatteryPercent()
     {
         return currentBattery / maxBattery;
     }
+    private void UpdateBatteryUI()
+    {
+        if (batterySlider != null)
+        {
+            batterySlider.value = currentBattery / maxBattery;
+        }
+    }
+
 }
