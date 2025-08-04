@@ -24,6 +24,9 @@ public class FPSController : MonoBehaviour
 
     void Awake()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
 
@@ -73,14 +76,16 @@ public class FPSController : MonoBehaviour
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         controller.Move(move * moveSpeed * Time.deltaTime);
     }
-
     private void HandleLook()
     {
         lookInput = lookAction.ReadValue<Vector2>();
-        xRotation -= lookInput.y * lookSensitivity * Time.deltaTime;
+
+        xRotation -= lookInput.y * lookSensitivity;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * lookInput.x * lookSensitivity * Time.deltaTime);
+        transform.Rotate(Vector3.up * lookInput.x * lookSensitivity);
     }
+
+
 }
