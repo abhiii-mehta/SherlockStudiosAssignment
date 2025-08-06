@@ -21,6 +21,7 @@ public class FPSController : MonoBehaviour
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction toggleFlashlightAction;
+    public bool canLook = true;
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -51,7 +52,9 @@ public class FPSController : MonoBehaviour
     }
     void Update()
     {
-        HandleLook();
+        if (canLook)
+            HandleLook();
+
         HandleMovement();
 
         bool isGrounded = controller.isGrounded || Physics.Raycast(transform.position, Vector3.down, 1.1f);

@@ -6,7 +6,14 @@ public class InspectionManager : MonoBehaviour
     public Transform inspectionSpot;
     public GameObject cancelButton;
     public GameObject playerController;
-    public MonoBehaviour playerLookScript; // drag your look/move script here
+    public FPSController fpsController;
+
+    [Header("Rotation Settings")]
+    public float rotationSpeed = 200f;
+    [Header("Zoom Settings")]
+    public float zoomSpeed = 2f;
+    public float minZoomDistance = 0.5f;
+    public float maxZoomDistance = 2.5f;
 
     private GameObject currentObject;
     private Vector3 originalPosition;
@@ -15,8 +22,8 @@ public class InspectionManager : MonoBehaviour
 
     private bool inspecting = false;
 
-    [Header("Rotation Settings")]
-    public float scrollRotationSpeed = 10000f;
+    private Vector3 lastMousePosition;
+    private float currentZoomDistance;
 
     void Start()
     {
@@ -26,24 +33,43 @@ public class InspectionManager : MonoBehaviour
     void Update()
     {
         if (!inspecting || currentObject == null) return;
-        HandleScrollRotation();
+
+        HandleRotation();
+        HandleZoom();
     }
 
-    private void HandleScrollRotation()
+    private void HandleRotation()
     {
-        if (Camera.main == null)
-    {
-            Debug.LogError("Main camera not found. Make sure it is tagged 'MainCamera' and not disabled.");
-            return;
+        if (Input.GetMouseButtonDown(0))
+        {
+            lastMousePosition = Input.mousePosition;
         }
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
 
+        if (Input.GetMouseButton(0))
+        {
+            Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
+            lastMousePosition = Input.mousePosition;
+
+            float rotX = -mouseDelta.y * rotationSpeed * Time.deltaTime;
+            float rotY = mouseDelta.x * rotationSpeed * Time.deltaTime;
+
+            currentObject.transform.Rotate(Camera.main.transform.right, rotX, Space.World);
+            currentObject.transform.Rotate(Vector3.up, rotY, Space.World);
+        }
+    }
+
+    private void HandleZoom()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (Mathf.Abs(scroll) > 0.001f)
         {
-            Vector3 rotationAxis = Camera.main.transform.up;
-            currentObject.transform.Rotate(rotationAxis, scroll * scrollRotationSpeed, Space.World);
+            currentZoomDistance -= scroll * zoomSpeed;
+            currentZoomDistance = Mathf.Clamp(currentZoomDistance, minZoomDistance, maxZoomDistance);
+
+            currentObject.transform.localPosition = Vector3.forward * currentZoomDistance;
         }
     }
+
     public void StartInspection(GameObject obj)
     {
         if (inspecting) return;
@@ -56,17 +82,18 @@ public class InspectionManager : MonoBehaviour
         originalParent = obj.transform.parent;
 
         obj.transform.SetParent(inspectionSpot);
-        obj.transform.localPosition = Vector3.zero;
+        currentZoomDistance = 1.5f;
+        obj.transform.localPosition = Vector3.forward * currentZoomDistance;
         obj.transform.localRotation = Quaternion.identity;
 
         cancelButton.SetActive(true);
-
-        if (playerLookScript != null)
-            playerLookScript.enabled = false;
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (fpsController != null)
+            fpsController.canLook = false;
     }
+
     public void CancelInspection()
     {
         if (!inspecting || currentObject == null) return;
@@ -79,12 +106,18 @@ public class InspectionManager : MonoBehaviour
         inspecting = false;
 
         cancelButton.SetActive(false);
-
-        if (playerLookScript != null)
-            playerLookScript.enabled = true;
-
+        if (fpsController != null)
+            fpsController.canLook = true;
+        TogglePlayerControl(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
+    private void TogglePlayerControl(bool state)
+    {
+        if (playerController != null)
+        {
+            playerController.SetActive(state);
+        }
+    }
 }
