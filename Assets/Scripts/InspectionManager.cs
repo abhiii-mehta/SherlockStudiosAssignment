@@ -13,19 +13,26 @@ public class InspectionManager : MonoBehaviour
 
     private bool inspecting = false;
 
+    [Header("Rotation Settings")]
+    public float scrollRotationSpeed = 10000f;
+
     void Update()
     {
-        if (inspecting && currentObject != null)
+        if (!inspecting || currentObject == null) return;
+
+        HandleScrollRotation();
+    }
+
+    private void HandleScrollRotation()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        if (Mathf.Abs(scroll) > 0.001f)
         {
-            float rotX = Input.GetAxis("Mouse X") * 100f * Time.deltaTime;
-            float rotY = Input.GetAxis("Mouse Y") * 100f * Time.deltaTime;
-
-            currentObject.transform.Rotate(Vector3.up, -rotX, Space.World);
-
-            currentObject.transform.Rotate(Camera.main.transform.right, rotY, Space.World);
+            Vector3 rotationAxis = Camera.main.transform.up;
+            currentObject.transform.Rotate(rotationAxis, scroll * scrollRotationSpeed, Space.World);
         }
     }
-    private Camera cam => Camera.main;
 
     public void StartInspection(GameObject obj)
     {
@@ -44,9 +51,10 @@ public class InspectionManager : MonoBehaviour
 
         cancelButton.SetActive(true);
     }
+
     public void CancelInspection()
     {
-        if (!inspecting) return;
+        if (!inspecting || currentObject == null) return;
 
         currentObject.transform.SetParent(originalParent);
         currentObject.transform.position = originalPosition;
