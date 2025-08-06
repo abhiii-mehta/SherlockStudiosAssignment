@@ -1918,6 +1918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inspectionSpot: {fileID: 2137108681}
   cancelButton: {fileID: 1583369024}
+  playerController: {fileID: 0}
   scrollRotationSpeed: 10000
 --- !u!4 &1455088584
 Transform:
@@ -1952,7 +1953,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1583369025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1996,7 +1997,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1583369026}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1455088583}
+        m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
+        m_MethodName: CancelInspection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1583369026
 MonoBehaviour:
   m_ObjectHideFlags: 0
