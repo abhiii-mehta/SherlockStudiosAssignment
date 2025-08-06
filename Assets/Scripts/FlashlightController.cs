@@ -23,15 +23,27 @@ public class FlashlightController : MonoBehaviour
 
     [Header("UI")]
     public Slider batterySlider;
+    private InventoryManager inventoryManager;
+
     void Start()
     {
         currentBattery = maxBattery;
         flashlightLight.enabled = false;
         fallbackLight.enabled = false;
         Debug.Log("FlashlightController started");
+        inventoryManager = FindObjectOfType<InventoryManager>();
+        if (inventoryManager == null)
+        {
+            Debug.LogError("InventoryManager not found by FlashlightController");
+        }
+
     }
     void Update()
     {
+        if (inventoryManager != null && inventoryManager.IsInventoryOpen())
+        {
+            return;
+        }
         if (Input.GetKeyDown(toggleKey))
         {
             Debug.Log("Toggle key pressed");
