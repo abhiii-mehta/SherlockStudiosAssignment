@@ -1,0 +1,53 @@
+FPS Inventory + Exploration Task (HDRP) – Implementation Overview
+
+
+Project Summary
+
+This Unity HDRP project is a first-person exploration game featuring an inventory 
+and flashlight system as per the assignment requirements. The player can collect 
+and use items, including a rechargeable flashlight with battery management and UI feedback.
+
+Due to a personal emergency, I was unable to complete all aspects of the assignment 
+within the deadline. However, I made every effort to manage my time and implement 
+the core systems to demonstrate my understanding and skills.
+
+
+Systems Implemented
+
+1. Flashlight System
+   - Toggle On/Off: Player can toggle flashlight on or off using a key (default F).
+   - Battery Drain: Battery drains over time when flashlight is on, with adjustable drain rate.
+   - Battery Recharge: Player can recharge the flashlight battery by using collected battery items from inventory.
+   - Light Intensity Dimming: The flashlight’s light intensity gradually decreases as the battery drains.
+   - Fallback Ambient Light: When the flashlight battery is depleted, a dim fallback light flickers to provide minimal visibility.
+   - UI Battery Bar: A slider UI bar displays the current battery level in real-time.
+   - Battery Drain Pause: Battery drainage pauses when the inventory UI is open to prevent unintended battery loss.
+
+2. Inventory & Interaction System
+   - Inventory Toggle: Inventory UI is opened and closed using the Tab key.
+   - Collectible Items: Items (batteries and others) can be picked up using a key prompt (E).
+   - Inventory Management: Batteries are tracked with a count and shown in the inventory UI.
+   - Use Battery Item: Players can use batteries from the inventory to recharge the flashlight.
+   - UI Elements: Includes battery count text and a button to use batteries.
+   - Button Visibility: The "Use Battery" button only appears if the player has batteries and is not inspecting another object.
+   - Inspect System: Players can inspect items, rotating and zooming them at a fixed inspection spot.
+   - Cancel Inspection: Inspection can be cancelled with a button, returning the item to its original position.
+
+
+Design Decisions
+
+- Flashlight Battery Management: Implemented a realistic battery drain rate adjustable for gameplay pacing. Rechargeable batteries encourage exploration and resource management.
+- UI Integration: Battery bar and inventory buttons provide intuitive player feedback without cluttering the screen.
+- Player Controls During Inspection: Player movement and camera look are disabled during inspection to focus on the item, while allowing smooth mouse-driven rotation and zoom of the inspected object.
+- Fallback Light Flicker: Flickering fallback light adds atmosphere and signals low battery without full darkness.
+- Inventory System Scope: Focused on battery items to meet core requirements; can be extended for other usable/pickupable items.
+- Simplified Item Interaction: Pickup and inspection use simple trigger zones and keypress, avoiding complex UI until the inventory is accessed.
+
+
+How to Use
+
+- Flashlight: Toggle on/off with F. Battery drains while on.
+- Collect Batteries: Approach battery pickups and press E to collect.
+- Inventory: Open/close inventory with Tab. Use the inventory UI to see battery count and use batteries to recharge flashlight.
+- Inspect Items: Trigger inspection on applicable items; rotate with mouse movement and zoom with scroll.
+- Cancel Inspection: Click the cancel button to stop inspecting and return item to original place.
